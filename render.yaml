@@ -2,7 +2,7 @@ services:
   - type: web
     name: fish-detection-api
     env: docker
-    plan: standard
+    plan: free  # FREE TIER - spindown after 15 min inactivity
     
     # Docker configuration
     dockerCommand: uvicorn app.main:app --host 0.0.0.0 --port 10000
@@ -24,23 +24,22 @@ services:
       - key: LOG_LEVEL
         value: info
       - key: WORKERS
-        value: "4"
+        value: "2"  # Reduced for free tier
+      - key: MODEL_DOWNLOAD_URL
+        value: ""  # Set your S3/external storage URL here
     
-    # Health check
+    # Health check (required for free tier)
     healthCheckPath: /health
     healthCheckInterval: 30
     
-    # Resource limits
-    plan: standard
-    disk:
-      name: model-storage
-      mountPath: /app/model
-      sizeGB: 20
+    # NO PERSISTENT DISK on free tier
+    # Models must be: 1) Included in git directly, OR
+    #                 2) Downloaded from external storage on startup
     
     # Timeout settings
     timeout: 300
     
     # Build settings
     rootDir: fastapi_app
-    buildCommand: echo "Installing dependencies..."
+    buildCommand: echo "Building Fish Detection API for Render..."
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port 10000

@@ -1,0 +1,106 @@
+# 🐟 Fish Detection API - Render FREE Tier Quick Card
+
+## 3-Step Deployment
+
+### Step 1️⃣: Git LFS Setup (2 min)
+```powershell
+cd f:\fish model backend
+.\setup-render.bat
+```
+
+### Step 2️⃣: Push to GitHub (5 min)
+```powershell
+git add .
+git commit -m "Ready for Render FREE deployment"
+git remote add origin https://github.com/YOUR_USERNAME/fish-detection-api.git
+git push -u origin main
+```
+
+### Step 3️⃣: Deploy on Render (15 min)
+1. https://dashboard.render.com
+2. **New** → **Web Service**
+3. Select repo → **Plan: FREE** ⚠️
+4. Create & wait
+
+## Your Live API
+```
+https://fish-detection-api-xxxxx.onrender.com
+```
+
+## Test Commands
+
+### Health Check
+```powershell
+curl https://fish-detection-api-xxxxx.onrender.com/health
+```
+
+### API Docs
+```
+https://fish-detection-api-xxxxx.onrender.com/docs
+```
+
+### Predict
+```powershell
+curl -X POST "https://fish-detection-api-xxxxx.onrender.com/predict" `
+  -F "file=@image.jpg"
+```
+
+## ⚠️ Key Points
+
+| Point | Detail |
+|-------|--------|
+| **Cost** | $0/month |
+| **Cold Start** | 30-50 seconds (first request) |
+| **Spindown** | After 15 min idle |
+| **RAM** | 512 MB |
+| **CPU** | 0.5 cores |
+
+## 🔄 Update Your API
+
+```powershell
+# Make changes, then:
+git add .
+git commit -m "description"
+git push origin main
+# Auto-deploys in 5-10 min
+```
+
+## 🆘 Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| Models missing | `git lfs ls-files` should show them |
+| Out of memory | Reduce WORKERS to 1 in render.yaml |
+| First request slow | That's cold start - wait 50 sec |
+| Build error | Check Render logs |
+
+## 📚 Full Guides
+
+- **Quick Start**: [RENDER_QUICK_START.md](RENDER_QUICK_START.md)
+- **Free Tier Details**: [RENDER_FREE_TIER.md](RENDER_FREE_TIER.md)
+- **Complete Guide**: [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)
+- **Summary**: [DEPLOYMENT_SUMMARY.md](DEPLOYMENT_SUMMARY.md)
+
+## 📊 Performance
+
+- **First request**: 30-50 seconds (cold start)
+- **Warm requests**: 1-5 seconds
+- **After 15 min idle**: Cold start again
+
+## ✅ Checklist
+
+- [ ] Ran setup-render.bat
+- [ ] Pushed to GitHub
+- [ ] Created on Render (FREE plan)
+- [ ] Waited 15 minutes
+- [ ] Tested /health
+- [ ] Tested /predict (waited 50 sec)
+
+## 🚀 Ready!
+
+You're live! Share your API URL with anyone. It's free and will run forever on the free tier! 🎉
+
+---
+Created: 2026  
+Tech: FastAPI + TFLite + Render  
+Cost: $0/month ✅
