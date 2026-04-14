@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  fish-detection-api:
+    container_name: fish-detection-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    
+    volumes:
+      # Mount model directories
+      - ./model:/app/model:ro
+      - ./best.pt:/app/best.pt:ro
+      - ./best_pt_folder:/app/best_pt_folder:ro
+      - ./efficientnet_fish.h5:/app/efficientnet_fish.h5:ro
+      - ./clf_class_names.json:/app/clf_class_names.json:ro
+      
+      # Mount for logs and outputs
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+    
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=INFO
+      - WORKERS=8
+      - CUDA_VISIBLE_DEVICES=0  # GPU device to use
+    
+    restart: unless-stopped
+    
+    # GPU support
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+        limits:
+          cpus: '4'
+          memory: 16G
+        reservations:
+          cpus: '2'
+          memory: 8G
+    
+    # Healthcheck
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  logs:
+    driver: local
+  uploads:
+    driver: local
+
+networks:
+  default:
+    name: fish-detection-network
+    driver: bridge

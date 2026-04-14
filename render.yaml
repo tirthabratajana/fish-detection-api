@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: fish-detection-api
+    env: docker
+    plan: standard
+    
+    # Docker configuration
+    dockerCommand: uvicorn app.main:app --host 0.0.0.0 --port 10000
+    
+    # Port configuration
+    ports:
+      - port: 10000
+        protocol: HTTP
+    
+    # Auto-deploy on push
+    autoDeploy: true
+    
+    # Environment variables
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: PYTHONDONTWRITEBYTECODE
+        value: "1"
+      - key: LOG_LEVEL
+        value: info
+      - key: WORKERS
+        value: "4"
+    
+    # Health check
+    healthCheckPath: /health
+    healthCheckInterval: 30
+    
+    # Resource limits
+    plan: standard
+    disk:
+      name: model-storage
+      mountPath: /app/model
+      sizeGB: 20
+    
+    # Timeout settings
+    timeout: 300
+    
+    # Build settings
+    rootDir: fastapi_app
+    buildCommand: echo "Installing dependencies..."
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port 10000

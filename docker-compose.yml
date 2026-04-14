@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  fish-detection-api:
+    container_name: fish-detection-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    
+    volumes:
+      # Mount model directories
+      - ./model:/app/model:ro
+      - ./best.pt:/app/best.pt:ro
+      - ./best_pt_folder:/app/best_pt_folder:ro
+      - ./efficientnet_fish.h5:/app/efficientnet_fish.h5:ro
+      - ./clf_class_names.json:/app/clf_class_names.json:ro
+      
+      # Mount for logs and outputs
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+    
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=INFO
+      - WORKERS=4
+    
+    restart: unless-stopped
+    
+    # Resource limits (adjust based on your system)
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 8G
+        reservations:
+          cpus: '1'
+          memory: 4G
+    
+    # Healthcheck
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  logs:
+    driver: local
+  uploads:
+    driver: local
+
+networks:
+  default:
+    name: fish-detection-network
+    driver: bridge
