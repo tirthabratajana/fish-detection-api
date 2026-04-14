@@ -1,0 +1,112 @@
+{
+  "info": {
+    "name": "Fish Species Detection API",
+    "description": "Postman collection for testing the two-stage fish detection API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    },
+    {
+      "key": "species_list",
+      "value": "Catla, CommonCarp, Mori, Rohu, SilverCarp",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health & Info",
+      "item": [
+        {
+          "name": "API Root Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Get API information and available endpoints"
+          },
+          "response": []
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Check API and models status"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Single Prediction",
+      "item": [
+        {
+          "name": "Predict Single Fish Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/predict",
+              "host": ["{{base_url}}"],
+              "path": ["predict"]
+            },
+            "description": "Upload a single fish image and get species prediction\n\n**Steps:**\n1. Click on \"file\" form field\n2. Click \"Select Files\" and choose a fish image (JPG/PNG)\n3. Send the request\n4. View results in response"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Batch Prediction",
+      "item": [
+        {
+          "name": "Predict Multiple Fish Images",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/predict-batch",
+              "host": ["{{base_url}}"],
+              "path": ["predict-batch"]
+            },
+            "description": "Upload multiple fish images (max 10) and get predictions for all\n\n**Steps:**\n1. Click on \"files\" form field\n2. Click \"Select Files\" and choose multiple fish images\n3. Send the request\n4. View results in response array"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
