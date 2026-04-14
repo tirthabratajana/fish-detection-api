@@ -4,14 +4,15 @@ FROM python:3.10-slim
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies (including OpenCV requirements)
 RUN apt-get update && apt-get install -y \
-    build-essential \
     libsm6 \
     libxext6 \
     libxrender-dev \
-    libgomp1 \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
     wget \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
@@ -32,7 +33,7 @@ EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/health')" || exit 1
+    CMD curl -f http://localhost:8000/health || exit 1
 
 # Change to fastapi_app directory and run the application
 WORKDIR /app/fastapi_app
